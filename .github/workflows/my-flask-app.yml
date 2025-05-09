@@ -21,7 +21,18 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Build and push Docker image
+    - name: Build Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: false
+        tags: lazydimas034/task_3:latest
+
+    - name: Run security scan on Docker image (using Trivy)
+      run: |
+        docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image lazydimas034/task_3:latest
+
+    - name: Push Docker image
       uses: docker/build-push-action@v5
       with:
         context: .
